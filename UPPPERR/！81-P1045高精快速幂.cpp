@@ -24,15 +24,15 @@ void result_1()
 void result_2()//只是在result_1的基础上进行了细微的修改
 {
 	memset(sav, 0, sizeof(sav));
-	for (int i = 1; i <= 500; i += 1)
+	for (int i = 1; i <= 500; i ++)
 	{
-		for (int j = 1; j <= 500; j += 1)
+		for (int j = 1; j <= 500; j ++)
 
 		{
-			sav[i + j - 1] +=base[i] *base[j];
+			sav[i + j - 1] +=base[i] *base[j];//
 		}
 	}
-	for (int i = 1; i <= 500; i += 1)
+	for (int i = 1; i <= 500; i ++)
 	{
 		sav[i + 1] += sav[i] / 10;
 		sav[i] %= 10;
