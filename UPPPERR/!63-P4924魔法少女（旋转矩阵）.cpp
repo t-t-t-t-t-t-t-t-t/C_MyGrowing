@@ -16,9 +16,9 @@ int main() {
 	}
 	while (m--)
 	{
-		int x, y, r, z;
+		int x, y, r, z;//rŒ™∞Îæ∂
 		cin >> x >> y >> r >> z;
-		if (z == 0)
+		if (z == 0)//À≥ ±’Î;
 		{
 			for (int i = -r; i <= r; i++)
 			{
@@ -28,7 +28,7 @@ int main() {
 				}
 			}
 		}
-		else
+		else//ƒÊ ±’Î;
 		{
 			for (int i = -r; i <= r; i++)
 			{
