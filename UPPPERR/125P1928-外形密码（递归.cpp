@@ -1,32 +1,26 @@
 #include<iostream>
 #include<string>
 using namespace std;
-const long long N = 2e5 + 9;
-string ans;
-string key()
-{
-	int n;
-	string s, s1;
-	char c;
-	while (cin >> c)
-	{
-		if (c == '[')
-		{
-			cin >> n;
-			s1 = key();
-			while (n--) s += s1;
+string read(){
+	int num;
+	string s, b;
+	char a;
+	while (cin >> a){
+		if (a == '['){
+			cin >> num;
+			b = read();
+			while (num--) s += b;
 		}
-		else
-		{
-			if (c == ']') return s;
-			else s += c;
+		else if (a == ']'){
+			return s;
+		}
+		else{
+			s += a;
 		}
 	}
-	ans = s;
+	return s;
 }
-int main()
-{
-	key();
-	cout << ans;
+int main(){
+	cout << read();
 	return 0;
 }
