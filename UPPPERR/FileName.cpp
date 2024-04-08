@@ -1,39 +1,36 @@
 #include<iostream>
-#include<vector>
-#include<algorithm>
+#include<string>
+#include<cstring>
 using namespace std;
-const int N = 2e5 + 9;
-vector<int>X;
-struct p {
-	int l, r;
-}m[N];
-int po(int x) {
-	return lower_bound(X.begin(), X.end(), x) - X.begin();
+const long long N = 2e3;
+string chu(long long x, long long y) {
+	string s = to_string(x);
+	long long m[N] = { 0 }, ans[N] = { 0 };
+	for (long long i = 0; i < s.length(); i++) {
+		m[i] = s[i] - '0';
+	}
+	long long ch = 0;
+	for (long long i = 0; i < s.length(); i++) {
+		ans[i] = (ch * 10 + m[i]) / y;
+		ch= (ch * 10 + m[i]) % y;
+	}
+	string n;
+	for (long long i = 0; i < s.length(); i++) {
+		n += ans[i] + '0';
+	}
+	long long begin = 0;
+	while (n[begin] == '0'&&begin<n.length()) {
+		begin++;
+	}
+	string final;
+	for (long long i = begin; i < n.length(); i++) {
+		final += n[i];
+	}
+	return final;
 }
-int a[N];
 int main() {
-	int n; cin >> n;
-	for (int i = 0; i < n; i++)
-	{
-		cin >> m[i].l >> m[i].r;
-		X.push_back(m[i].l);
-		X.push_back(m[i].r);
-	}
-	sort(X.begin(), X.end());
-	X.erase(unique(X.begin(), X.end()), X.end());
-	for (int i = 0; i < n; i++) {
-		a[po(m[i].r)]--;
-		a[po(m[i].l)]++;
-	}
-	for (int i = 1; i < X.size(); i++) {
-		a[i] += a[i - 1];
-	}
-	int all = 0; int le, ri;
-	for (int i = 0; i < X.size(); i++) {
-		if (a[i] != 0 && a[i - 1] == 0) { le = i; }
-		if (a[i] == 0 && a[i - 1] != 0) { ri = i; all += X[ri] - X[le]; }
-	}
-	cout << all;
-
+	long long a, b;
+	cin >> a >> b;
+	cout<<chu(a, b);
 	return 0;
 }
