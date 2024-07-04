@@ -6,8 +6,8 @@ class PhoneBook;
 class Info { //联系人，用一个链表结点表示
 	string name; //姓名
 	int phoneNum; //电话
-public:
 	Info* next;  //指向下一个结点
+public:
 	Info(string _name = "", int _phoneNum = 0) :name(_name), phoneNum(_phoneNum), next(NULL)
 	{
 	}
@@ -15,7 +15,7 @@ public:
 	{
 		name += _name;
 	}
-	Info operator=(const Info&a) {
+	Info operator=(const Info&a) {// 深拷贝
 		name = a.name;
 		phoneNum = a.phoneNum;
 		return *this;
@@ -32,14 +32,14 @@ public:
 		in >> _info.name >> _info.phoneNum;
 		return in;
 	}
-	friend ostream& operator<<(ostream& out, const Info& _info) {
+	friend ostream& operator<<(ostream& out, const Info& _info) {// 重载运算符>>
 		out << _info.name;
 		if (_info.phoneNum) {
 			out << '.' << _info.phoneNum;
 		}
 		return out;
 	}
-	friend ostream& operator<<(ostream& out, const Info* _info) {
+	friend ostream& operator<<(ostream& out, const Info* _info) {//函数重载 ,参数为Info* 时用
 		out << _info->name;
 		if (_info->phoneNum) {
 			out << '.' << _info->phoneNum;
@@ -47,45 +47,42 @@ public:
 		return out;
 	}
 	friend PhoneBook;
-	//属性的get和set方法....自行定义
 };
 class PhoneBook {//组链表方式实现通讯录
-	//....自行增加一些操作
-	//提示：把插入和查找先写成内部函数，再被运算符重载调用，会更方便
 	static const int MaxPage = 26;
-	Info** Table;
+	Info** Table;// 链表数组
 public:
-	// init
-	PhoneBook() :Table(new Info* [MaxPage]) {
+	// init 初始化
+	PhoneBook() :Table(new Info* [MaxPage]) {// 首先先开辟26个空间
 		for (int i = 0; i < MaxPage; i++) {
-			Table[i] = new Info('A' + i);
+			Table[i] = new Info('A' + i);// Table 就是一个 Info* 类型的,给头指针初始化
 		}
 	}
-	// get right pageIndx
+	// get right pageIndx 一个类模板,既可以输入A-Z的数字,也可以输入0-25,表示访问(链表数组中的)哪一个链表, 返回一个合法数字
 	template<typename T>int getRightPageIndex(T pageIndx) {
 		if (pageIndx >= 0 && pageIndx <= 26) {
 			return pageIndx;
 		}
-		else {
+		else {// 如果是字母
 			return pageIndx - 'A';
 		}
 	}
-	// getNode
-	template<typename Type>Info* getNode(Type whichPage, int index) {
+	//  whichPage 访问哪一个链表 , index 访问链表中的第几个元素
+	template<typename Type>Info* getNode(Type whichPage, int index) { 
 		int pageNum = getRightPageIndex(whichPage);
-		index++;
+		index++;// 头指针为标识符(不是信息),不访问;
 		Info* pNode = Table[pageNum];
-		while (pNode->next && index--) {
+		while (pNode->next && index--) {// 链表用while历遍
 			pNode = pNode->next;
 		}
 		return pNode;
 	}
-	// getHeadNode
-	template<typename Type>Info* head(Type whichPage) {
+	// getHeadNode 得到某一个链表的头指针
+	template<typename Type>Info* head(Type whichPage) { 
 		int pageNum = getRightPageIndex(whichPage);
 		return Table[pageNum];
 	}
-	// getLastNode
+	// getLastNode 历遍并得到最后一个Node
 	template<typename Type>Info* getLastNode(Type whichPage = 0) {
 		int pageNum = getRightPageIndex(whichPage);
 		Info* pNode = Table[pageNum];
@@ -94,46 +91,45 @@ public:
 		}
 		return pNode;
 	}
-	// insert
+	// insert 在头指针之后插入
 	void insert(Info person) {
-		Info* pNode = find(person.name);
+		Info* pNode = find(person.name);// 看有没有重复的
 		if (pNode) {// 已经有了
-			pNode->phoneNum = person.phoneNum;
+			pNode->phoneNum = person.phoneNum; // 那么覆盖电话号码
 			return;
 		}
-		pNode = new Info(person);
-		Info* headNode = head(person.name[0]);
-		pNode->next = headNode->next;
+		pNode = new Info(person); // 新建一个节点
+		Info* headNode = head(person.name[0]);// 得到要插入的链表的首地址
+		pNode->next = headNode->next; // 进行插入 
 		headNode->next = pNode;
 		return;
 	}
-	// find info
+	// find info 以name为标识符来查找节点
 	Info* find(string personName) {
 		Info* pNode = head(personName[0]);
-		while (pNode->next) {
-			pNode = pNode->next;
+		while (pNode->next) {// while历遍
+			pNode = pNode->next;// 由于第一个节点为标识符所以直接跳过,变为下一个
 			if (pNode->name == personName) {
-				return pNode;
+				return pNode;// 找到了就返回
 			}
 		}
 		return NULL;
 	}
 
 	// build
-	void Input() {
+	void Input() { // 建造通讯录
 		int n; cin >> n;
 		for (int i = 0; i < n; i++) {
-			Info person("",0);
-			cin >> person;
-			insert(person);
+			Info person("",0); // 开辟一个节点
+			cin >> person;// 根据重载的>>,初始化
+			insert(person); // 以插入的方式构造
 		}
-		Print();
 	}
-	// print
+	// print  输出
 	void Print() {
 		for (int i = 0; i < MaxPage; i++) {
 			Info* pNode = head(i);
-			if (!(pNode->next)) {
+			if (!(pNode->next)) {// 这个链表没有内容,不输出
 				continue;
 			}
 			cout << pNode << "--";
@@ -144,33 +140,35 @@ public:
 			cout << '\n';
 		}
 	}
-	Info* operator()(string personName) {
+	// 重载()
+	Info* operator()(string personName) { 
 		return find(personName);
 	}
-	void operator+=(Info person) {
+	// 重载 += 
+	void operator+=(Info person) { 
 		insert(person);
 	}
-	PhoneBook& operator = (PhoneBook b){
+	PhoneBook& operator = (PhoneBook b){ // 重载= ,深拷贝
 		for (int i = 0; i < MaxPage;i++) {
 			Info* pNodeA = head(i);
 			Info* pNodeB = b.head(i);
 			while (pNodeB->next) {
 				pNodeB = pNodeB-> next;
-				pNodeA->next = new Info("");
-				pNodeA->next->operator=(*pNodeB);
+				pNodeA->next = new Info("");// 开一个节点,改变了地址
+				pNodeA->next->operator=(*pNodeB);// 为节点赋值
 				pNodeA = pNodeA->next;
 			}
 		}
 		return *this;
 	}
-	PhoneBook operator+( PhoneBook &b) {
-		PhoneBook A;
+	PhoneBook operator+( PhoneBook &b) { // 两个通讯录合并
+		PhoneBook A; // 防止原来的数据变化,做一个拷贝
 		A = *this;
-		for (int i = 0; i < 12; i++) {
+		for (int i = 0; i < MaxPage; i++) {
 			Info* pNodeB = b.head(i);
-			while (pNodeB->next) {
+			while (pNodeB->next) {// 遍历 B
 				pNodeB = pNodeB->next;
-				A.insert(*pNodeB);
+				A.insert(*pNodeB); // 把 B中的节点插入A
 			}
 		}
 		return A;
