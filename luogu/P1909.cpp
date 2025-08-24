@@ -1,43 +1,26 @@
 //https://www.luogu.com.cn/problem/P1909
 #include<iostream>
 using namespace std;
-int findMin(int* arr){
-	int min = arr[0];
-	for (int i = 1; i < 3; i++) {
-		if (arr[i] < min) {
-			min = arr[i];
-		}
-	}
-	return min;
-}
+struct HB{
+	int price;
+	int num;
+};
 int main() {
 	int n;
-	int** arr = new int* [3];
-	int* coast = new int[3];
+	// 32位最大值
+	int ans = (1 << 31) - 1;
 	cin >> n;
+	HB* hb = new HB[3];
 	for (int i = 0; i < 3; i++) {
-		arr[i] = new int[2];
-		coast[i] = 0;
+		cin >> hb[i].num >> hb[i].price;
+		// 铅笔是一包一包卖的，计算需要买多少包
+		float needBuy = (n*1.0 / hb[i].num);
+		// 进行向上取整
+		int neddBuy_int = needBuy == int(needBuy) ? int(needBuy) : int(needBuy) + 1;
+		// 取最小值
+		ans = min(ans, neddBuy_int * hb[i].price);
 	}
-
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 2; j++) {
-			cin >> arr[i][j];
-		}
-	}
-	for (int i = 0; i < 3; i++) {
-		int num = 0;
-		while (num < n) {
-			coast[i] += arr[i][1];
-			num += arr[i][0];
-		}
-	}
-	cout << findMin(coast) << endl;
-
-	for (int i = 0; i < 3; i++) {
-		delete[] arr[i];
-	}
-	delete[] arr;
-
+	cout << ans;
+	delete[] hb;
 	return 0;
 }
